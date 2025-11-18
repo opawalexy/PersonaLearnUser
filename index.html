@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PersonaLearn – AI Personalized Education Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #020617;
+      --card-bg: #020617;
+      --card-bg-soft: #020617;
+      --border: #1e293b;
+      --border-soft: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #0ea5e9;
+      --accent-soft: rgba(14, 165, 233, 0.1);
+      --accent-border: rgba(56, 189, 248, 0.5);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #020617 0, #020617 35%, #020617 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Layout helpers */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .page {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header / Nav */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: rgba(2, 6, 23, 0.92);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.7rem 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #8b5cf6, #22d3ee);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .brand-text h1 {
+      font-size: 1rem;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .brand-text p {
+      margin: 0;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: none;
+      gap: 1.5rem;
+      font-size: 0.8rem;
+      color: #cbd5f5;
+      align-items: center;
+    }
+
+    .nav-links button {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .btn-primary {
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.9rem;
+      border: none;
+      background: var(--accent);
+      color: #0b1120;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      background: #38bdf8;
+    }
+
+    @media (min-width: 768px) {
+      .nav-links {
+        display: flex;
+      }
+    }
+
+    /* Hero section */
+    .hero {
+      border-bottom: 1px solid #020617;
+      background: linear-gradient(to bottom, #020617 0%, #020617 60%);
+    }
+
+    .hero-inner {
+      padding: 2.5rem 0 2.5rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .hero-inner {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--accent-border);
+      background: var(--accent-soft);
+      color: #7dd3fc;
+      font-size: 0.7rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .pill-dot {
+      width: 0.35rem;
+      height: 0.35rem;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .hero-title {
+      font-size: 1.85rem;
+      line-height: 1.2;
+      margin: 0 0 0.75rem;
+      font-weight: 600;
+    }
+
+    @media (min-width: 900px) {
+      .hero-title {
+        font-size: 2.3rem;
+      }
+    }
+
+    .hero-title span {
+      color: var(--accent);
+    }
+
+    .hero-subtext {
+      max-width: 36rem;
+      font-size: 0.85rem;
+      color: #cbd5f5;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0.8rem;
+      font-size: 0.8rem;
+      color: #cbd5f5;
+    }
+
+    .hero-steps li {
+      margin-bottom: 0.15rem;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+    }
+
+    .hero-tag {
+      border-radius: var(--radius-sm);
+      border: 1px solid #1e293b;
+      color: #e5e7eb;
+      padding: 0.25rem 0.6rem;
+    }
+
+    /* Hero right card */
+    .card {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: var(--radius-lg);
+      border: 1px solid #020617;
+      padding: 1rem;
+      box-shadow: 0 20px 45px rgba(8, 47, 73, 0.7);
+      font-size: 0.8rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.7rem;
+    }
+
+    .badge {
+      font-size: 0.68rem;
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid #1e293b;
+      background: #020617;
+      color: #9ca3af;
+    }
+
+    .number-badge {
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 999px;
+      background: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #020617;
+      margin-right: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    .hero-flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .hero-flow-step p {
+      margin: 0;
+    }
+
+    .hero-flow-step .title {
+      font-weight: 600;
+    }
+
+    .hero-flow-step .desc {
+      color: var(--muted);
+      font-size: 0.74rem;
+      margin-top: 0.12rem;
+    }
+
+    /* Main section layout */
+    .main-section {
+      padding: 2.5rem 0 2.8rem;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-two {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card-section {
+      background: linear-gradient(to bottom right, #020617, #020617);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 1.1rem;
+      font-size: 0.8rem;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .card-title-row h3 {
+      margin: 0;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .card-subtext {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Upload area */
+    .upload-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.4rem;
+      padding: 1.2rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px dashed #1f2937;
+      background: radial-gradient(circle at top, #020617 0, #020617 70%);
+      cursor: pointer;
+      transition: border 0.2s ease, background 0.2s ease;
+    }
+
+    .upload-area:hover {
+      border-color: var(--accent);
+      background: #020617;
+    }
+
+    .upload-icon {
+      width: 2.3rem;
+      height: 2.3rem;
+      border-radius: 18px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .upload-title {
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+
+    .upload-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      max-width: 18rem;
+    }
+
+    .upload-tags {
+      margin-top: 0.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    .upload-tag {
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      padding: 0.25rem 0.55rem;
+    }
+
+    /* Inputs */
+    .field {
+      margin-bottom: 0.6rem;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-size: 0.75rem;
+      color: #e5e7eb;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: var(--text);
+      padding: 0.4rem 0.7rem;
+      font-size: 0.75rem;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--accent);
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0.7rem;
+    }
+
+    /* Modalities */
+    .modalities-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .modalities-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .modalities-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .modalities-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+      font-size: 0.75rem;
+    }
+
+    .modalities-header p {
+      margin: 0;
+    }
+
+    .modality-card {
+      border-radius: var(--radius-md);
+      border: 1px solid #1f2937;
+      background: #020617;
+      padding: 0.7rem;
+      font-size: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .modality-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.15rem;
+    }
+
+    .modality-main {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .modality-main span.emoji {
+      font-size: 1.1rem;
+    }
+
+    .modality-main-title {
+      font-weight: 600;
+    }
+
+    .modality-time {
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      font-size: 0.65rem;
+      padding: 0.15rem 0.45rem;
+      color: var(--muted);
+    }
+
+    .modality-desc {
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    .modality-providers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .modality-provider-pill {
+      font-size: 0.65rem;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      padding: 0.18rem 0.45rem;
+    }
+
+    /* Orchestration section */
+    .orchestration-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: 1.5rem;
+      margin-top: 1.6rem;
+    }
+
+    @media (max-width: 900px) {
+      .orchestration-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .orchestration-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+      font-size: 0.75rem;
+    }
+
+    .orchestration-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    @media (min-width: 768px) {
+      .orchestration-row {
+        flex-direction: row;
+        align-items: stretch;
+      }
+    }
+
+    .node-card {
+      flex: 1;
+      border-radius: var(--radius-md);
+      border: 1px solid #1f2937;
+      background: #020617;
+      padding: 0.7rem;
+      font-size: 0.74rem;
+    }
+
+    .node-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .node-main {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .node-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 14px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .node-title {
+      font-size: 0.76rem;
+      font-weight: 500;
+    }
+
+    .node-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.12rem;
+    }
+
+    .node-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-top: 0.2rem;
+    }
+
+    .chip {
+      font-size: 0.65rem;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      padding: 0.18rem 0.45rem;
+    }
+
+    .orchestration-footer {
+      margin-top: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    @media (min-width: 768px) {
+      .orchestration-footer {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .btn-run {
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #020617;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* Provider panel */
+    .providers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      font-size: 0.74rem;
+    }
+
+    .provider-item {
+      display: flex;
+      gap: 0.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid #1f2937;
+      background: #020617;
+      padding: 0.6rem;
+    }
+
+    .provider-icon {
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 14px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .provider-headline {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .provider-name {
+      font-weight: 500;
+      font-size: 0.76rem;
+    }
+
+    .provider-badge {
+      font-size: 0.65rem;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      padding: 0.15rem 0.45rem;
+      color: var(--muted);
+    }
+
+    .provider-role {
+      margin-top: 0.15rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .providers-footer {
+      margin-top: 0.8rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid #1f2937;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid #020617;
+      padding: 0.8rem 0;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-inner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Header -->
+    <header>
+      <div class="container nav">
+        <div class="brand">
+          <div class="brand-icon">AI</div>
+          <div class="brand-text">
+            <h1>PersonaLearn Hub</h1>
+            <p>One file → infinite personalized learning paths.</p>
+          </div>
+        </div>
+        <nav class="nav-links">
+          <button>Use cases</button>
+          <button>Pricing</button>
+          <button>Docs</button>
+          <button class="btn-primary">Sign in</button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <div class="pill">
+            <span class="pill-dot"></span>
+            AI Personalized Education Demo
+          </div>
+          <h2 class="hero-title">
+            Upload any course. Choose how you want to learn.
+            <span>AI does the rest.</span>
+          </h2>
+          <p class="hero-subtext">
+            This demo layout shows how your platform can accept any learning material and orchestrate multiple AI providers—OpenAI, Google “Learn Your Way”, HeyGen, NotebookLM—to create personalized slides, videos, flashcards, podcasts, quizzes, and more.
+          </p>
+          <ul class="hero-steps">
+            <li>• Step 1: Upload your file (PDF, PPT, DOCX, link).</li>
+            <li>• Step 2: Tell us about the learner.</li>
+            <li>• Step 3: Pick the learning experiences you want.</li>
+            <li>• Step 4: The platform routes everything to the best AI tools.</li>
+          </ul>
+          <div class="hero-tags">
+            <span class="hero-tag">Teachers</span>
+            <span class="hero-tag">Edtech startups</span>
+            <span class="hero-tag">Corporate L&amp;D</span>
+            <span class="hero-tag">Creators</span>
+          </div>
+        </div>
+
+        <!-- Hero Right: Flow summary -->
+        <div class="card">
+          <div class="card-header">
+            <h3 style="margin:0;font-size:0.82rem;">Personalized Learning Flow</h3>
+            <span class="badge">Demo only</span>
+          </div>
+          <div>
+            <div class="hero-flow-step">
+              <div class="number-badge">1</div>
+              <div>
+                <p class="title">Upload learning material</p>
+                <p class="desc">PDF, slides, textbook chapter, LMS export, or notes.</p>
+              </div>
+            </div>
+            <div class="hero-flow-step">
+              <div class="number-badge">2</div>
+              <div>
+                <p class="title">Describe the learner</p>
+                <p class="desc">Age, level, goal, preferred format, and daily time.</p>
+              </div>
+            </div>
+            <div class="hero-flow-step">
+              <div class="number-badge">3</div>
+              <div>
+                <p class="title">Choose AI experiences</p>
+                <p class="desc">Narrated slides, flashcards, video, podcast, quizzes, etc.</p>
+              </div>
+            </div>
+            <div class="hero-flow-step">
+              <div class="number-badge">4</div>
+              <div>
+                <p class="title">Orchestrate providers</p>
+                <p class="desc">Smart routing to OpenAI, Google, HeyGen, NotebookLM—all from one place.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main interaction area -->
+    <section class="main-section">
+      <div class="container">
+        <!-- Step 1 + 2 -->
+        <div class="grid-two">
+          <!-- Upload -->
+          <div class="card-section">
+            <div class="card-title-row">
+              <div class="number-badge">1</div>
+              <h3>Upload learning material</h3>
+            </div>
+            <p class="card-subtext">
+              Attach the content you want to personalize. In a real platform this could connect to Google Drive, an LMS, Notion, or local files.
+            </p>
+
+            <label class="upload-area">
+              <div class="upload-icon">📁</div>
+              <div class="upload-title">Drop a file here, or click to browse</div>
+              <div class="upload-desc">
+                PDF, PPTX, DOCX, TXT, LMS export, or a zipped course module.
+                (In this demo, the file is not actually uploaded.)
+              </div>
+              <input type="file" style="display:none;" />
+            </label>
+
+            <div class="upload-tags">
+              <span class="upload-tag">PDF</span>
+              <span class="upload-tag">PowerPoint</span>
+              <span class="upload-tag">Word</span>
+              <span class="upload-tag">Notion export</span>
+              <span class="upload-tag">LMS content</span>
+              <span class="upload-tag">YouTube transcript</span>
+            </div>
+          </div>
+
+          <!-- Learner profile -->
+          <div class="card-section">
+            <div class="card-title-row">
+              <div class="number-badge">2</div>
+              <h3>Learner profile</h3>
+            </div>
+            <p class="card-subtext">
+              The same file can be personalized differently for a 7-year-old vs. a medical professional. This profile guides how the AI stack responds.
+            </p>
+
+            <div class="field">
+              <label>Learner name</label>
+              <input type="text" placeholder="e.g. Timi, Jade, 'Sales Onboarding Cohort A'" />
+            </div>
+
+            <div class="field-grid">
+              <div class="field">
+                <label>Age group</label>
+                <select>
+                  <option>Child (6–12)</option>
+                  <option>Teen (13–18)</option>
+                  <option selected>Adult</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Level / Context</label>
+                <select>
+                  <option>Primary / Middle School</option>
+                  <option>High School</option>
+                  <option selected>College / Professional</option>
+                  <option>Corporate Training</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Goal</label>
+              <select>
+                <option selected>Exam prep</option>
+                <option>Concept mastery</option>
+                <option>Project-based learning</option>
+                <option>Onboarding / orientation</option>
+              </select>
+            </div>
+
+            <div class="field-grid">
+              <div class="field">
+                <label>Time per day</label>
+                <select>
+                  <option>15 minutes</option>
+                  <option selected>30 minutes</option>
+                  <option>45 minutes</option>
+                  <option>60+ minutes</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Tone &amp; style</label>
+                <select>
+                  <option selected>Friendly &amp; encouraging</option>
+                  <option>Serious &amp; academic</option>
+                  <option>Playful &amp; game-like</option>
+                  <option>Professional &amp; concise</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Modalities -->
+        <div class="card-section" style="margin-top:1.6rem;">
+          <div class="modalities-header">
+            <div style="display:flex;align-items:center;gap:0.4rem;">
+              <div class="number-badge">3</div>
+              <h3 style="margin:0;">What do you want the AI to create?</h3>
+            </div>
+            <p>Select one or many experiences to generate from the same content.</p>
+          </div>
+
+          <div class="modalities-grid">
+            <!-- Narrated Slides -->
+            <div class="modality-card">
+              <div class="modality-top">
+                <div class="modality-main">
+                  <span class="emoji">📽️</span>
+                  <div>
+                    <div class="modality-main-title">Narrated Slides</div>
+                  </div>
+                </div>
+                <div class="modality-time">5–10 min</div>
+              </div>
+              <div class="modality-desc">
+                Turn this file into a slide deck with AI-generated narration for your learner profile.
+              </div>
+              <div class="modality-providers">
+                <span class="modality-provider-pill">OpenAI</span>
+                <span class="modality-provider-pill">HeyGen</span>
+              </div>
+            </div>
+
+            <!-- Flashcards -->
+            <div class="modality-card">
+              <div class="modality-top">
+                <div class="modality-main">
+                  <span class="emoji">🃏</span>
+                  <div>
+                    <div class="modality-main-title">Flashcards</div>
+                  </div>
+                </div>
+                <div class="modality-time">2–5 min</div>
+              </div>
+              <div class="modality-desc">
+                Generate spaced-repetition flashcards focused on key concepts and definitions.
+              </div>
+              <div class="modality-providers">
+                <span class="modality-provider-pill">OpenAI</span>
+              </div>
+            </div>
+
+            <!-- Explainer Video -->
+            <div class="modality-card">
+              <div class="modality-top">
+                <div class="modality-main">
+                  <span class="emoji">🎬</span>
+                  <div>
+                    <div class="modality-main-title">Explainer Video</div>
+                  </div>
+                </div>
+                <div class="modality-time">5–15 min</div>
+              </div>
+              <div class="modality-desc">
+                Create a short, avatar-based explainer video tailored to the learner's level.
+              </div>
+              <div class="modality-providers">
+                <span class="modality-provider-pill">OpenAI</span>
+                <span class="modality-provider-pill">HeyGen</span>
+              </div>
+            </div>
+
+            <!-- Podcast -->
+            <div class="modality-card">
+              <div class="modality-top">
+                <div class="modality-main">
+                  <span class="emoji">🎙️</span>
+                  <div>
+                    <div class="modality-main-title">Podcast / Audio Lesson</div>
+                  </div>
+                </div>
+                <div class="modality-time">5–10 min</div>
+              </div>
+              <div class="modality-desc">
+                Auto-generate a conversational, NotebookLM-style audio lesson from the content.
+              </div>
+              <div class="modality-providers">
+                <span class="modality-provider-pill">NotebookLM-style</span>
+                <span class="modality-provider-pill">OpenAI</span>
+              </div>
+            </div>
+
+            <!-- Quiz & Practice -->
+            <div class="modality-card">
+              <div class="modality-top">
+                <div class="modality-main">
+                  <span class="emoji">📚</span>
+                  <div>
+                    <div class="modality-main-title">Quiz &amp; Practice</div>
+                  </div>
+                </div>
+                <div class="modality-time">3–7 min</div>
+              </div>
+              <div class="modality-desc">
+                Build quizzes, practice questions, and step-by-step explanations.
+              </div>
+              <div class="modality-providers">
+                <span class="modality-provider-pill">OpenAI</span>
+              </div>
+            </div>
+
+            <!-- Study Guide -->
+            <div class="modality-card">
+              <div class="modality-top">
+                <div class="modality-main">
+                  <span class="emoji">📝</span>
+                  <div>
+                    <div class="modality-main-title">Study Guide</div>
+                  </div>
+                </div>
+                <div class="modality-time">3–7 min</div>
+              </div>
+              <div class="modality-desc">
+                Condense the content into a structured, personalized study roadmap.
+              </div>
+              <div class="modality-providers">
+                <span class="modality-provider-pill">OpenAI</span>
+                <span class="modality-provider-pill">Google Learn Your Way</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Orchestration + Providers -->
+        <div class="orchestration-grid">
+          <!-- Orchestration -->
+          <div class="card-section">
+            <div class="orchestration-card-header">
+              <div style="display:flex;align-items:center;gap:0.4rem;">
+                <div class="number-badge">4</div>
+                <h3 style="margin:0;">AI orchestration preview</h3>
+              </div>
+              <span style="font-size:0.7rem;color:var(--muted);">
+                This is how the backend routes calls.
+              </span>
+            </div>
+
+            <div class="orchestration-row">
+              <!-- Input node -->
+              <div class="node-card">
+                <div class="node-label">Input source</div>
+                <div class="node-main">
+                  <div class="node-icon">📄</div>
+                  <div>
+                    <div class="node-title">Uploaded course file</div>
+                    <div class="node-sub">
+                      Parsed and chunked into learning-ready segments.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Engine node -->
+              <div class="node-card">
+                <div class="node-label">AI engine stack</div>
+                <div class="node-chips">
+                  <span class="chip">OpenAI</span>
+                  <span class="chip">Google Learn Your Way</span>
+                  <span class="chip">HeyGen</span>
+                  <span class="chip">NotebookLM</span>
+                </div>
+                <div class="node-sub" style="margin-top:0.25rem;">
+                  Your orchestration service decides which providers to use for each modality:
+                  OpenAI for understanding and generation, HeyGen for avatar video,
+                  NotebookLM-style pipelines for podcasts, and Google’s adaptive layer for pacing.
+                </div>
+              </div>
+
+              <!-- Output node -->
+              <div class="node-card">
+                <div class="node-label">Personalized outputs</div>
+                <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.4rem;">
+                  <li class="node-main" style="align-items:flex-start;">
+                    <div class="node-icon">📽️</div>
+                    <div>
+                      <div class="node-title">Narrated Slides</div>
+                      <div class="node-sub">
+                        Simplified for the learner’s age and goal, ready to present or export.
+                      </div>
+                    </div>
+                  </li>
+                  <li class="node-main" style="align-items:flex-start;">
+                    <div class="node-icon">🃏</div>
+                    <div>
+                      <div class="node-title">Flashcards &amp; Quiz</div>
+                      <div class="node-sub">
+                        Key terms, questions, and hints tuned to daily time and difficulty.
+                      </div>
+                    </div>
+                  </li>
+                  <li class="node-main" style="align-items:flex-start;">
+                    <div class="node-icon">🎙️</div>
+                    <div>
+                      <div class="node-title">Podcast / Video</div>
+                      <div class="node-sub">
+                        Conversational explanations that the learner can listen to on the go.
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="orchestration-footer">
+              <p>
+                In a live deployment, clicking “Run personalization” would call your orchestration backend
+                (Node, Python, etc.) which queues jobs, calls provider APIs, and tracks progress.
+              </p>
+              <button class="btn-run" title="Demo only – button disabled">
+                Run personalization (demo)
+              </button>
+            </div>
+          </div>
+
+          <!-- Providers -->
+          <div class="card-section">
+            <h3 style="margin:0 0 0.3rem;font-size:0.82rem;">Connected AI providers</h3>
+            <p class="card-subtext">
+              This platform is the “to-go” hub. Users don’t need to think about APIs or models;
+              they just choose outcomes and the system picks the right tools.
+            </p>
+
+            <div class="providers-list">
+              <div class="provider-item">
+                <div class="provider-icon">O</div>
+                <div>
+                  <div class="provider-headline">
+                    <span class="provider-name">OpenAI</span>
+                    <span class="provider-badge">Core LLM</span>
+                  </div>
+                  <div class="provider-role">
+                    Deep understanding of the content, generation of summaries, explanations,
+                    quizzes, and structured learning paths.
+                  </div>
+                </div>
+              </div>
+
+              <div class="provider-item">
+                <div class="provider-icon">G</div>
+                <div>
+                  <div class="provider-headline">
+                    <span class="provider-name">Google Learn Your Way</span>
+                    <span class="provider-badge">Adaptive</span>
+                  </div>
+                  <div class="provider-role">
+                    Adaptive pacing, curriculum suggestions, and “next best lesson” recommendations
+                    based on learner performance.
+                  </div>
+                </div>
+              </div>
+
+              <div class="provider-item">
+                <div class="provider-icon">H</div>
+                <div>
+                  <div class="provider-headline">
+                    <span class="provider-name">HeyGen</span>
+                    <span class="provider-badge">Video</span>
+                  </div>
+                  <div class="provider-role">
+                    Avatar and voice video generation for explainer clips, course intros,
+                    and student-friendly walkthroughs.
+                  </div>
+                </div>
+              </div>
+
+              <div class="provider-item">
+                <div class="provider-icon">N</div>
+                <div>
+                  <div class="provider-headline">
+                    <span class="provider-name">NotebookLM</span>
+                    <span class="provider-badge">Podcast</span>
+                  </div>
+                  <div class="provider-role">
+                    Grounded, document-aware conversation and podcast-style explorations
+                    of the learner’s materials.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="providers-footer">
+              Tomorrow, you can plug in new video, speech, or tutoring models without changing
+              the learner’s experience. The hub stays the same; the providers evolve behind the scenes.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container footer-inner">
+        <p>© <span id="year"></span> PersonaLearn – Concept Demo.</p>
+        <p>Built as a multi-model, plug-and-play platform for personalized learning.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Just to keep the year current in the footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
